@@ -2,7 +2,7 @@
 
 ## Install
 
-`composer require ziffdavis/nova-multiselect`
+`composer require autumndev/nova-multiselect`
 
 ## Description
 
@@ -13,7 +13,8 @@ Allows having a BelongsToMany relationship MultiSelect Form Field powered by Sel
 public function fields(Request $request)
 {
     return [
-        MultiSelect::make('Category', 'categories')->options(\App\Models\Category::get(['id', 'name']))->placeHolder('Select Categories'),
+        MultiSelect::make('Category', 'categories')->options(\App\Models\Category::get(['id', 'name']))->placeHolder('Select Categories')
+        ->attachAdditionalRelationData(['type' => 'modes']),
     ];
 }
 ```
@@ -26,4 +27,5 @@ public function fields(Request $request)
 | `disabled($bool)`     | Sets whether or not the field is disabled | 
 | `optionLabel($label)` | Sets the attribute name to use for the option label (Default 'name')  | 
 | `optionValue($value)` | Sets the attribute name to use for the option value (Default 'id')  | 
+|`attachAdditionalRelationData($array)` | Sets additional data to be attached to the model in key value pairs |
  
