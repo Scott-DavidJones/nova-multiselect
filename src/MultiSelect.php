@@ -1,6 +1,14 @@
 <?php
 
-namespace ZiffDavis\Nova\MultiSelect;
+declare(strict_types=1);
+
+/*
+ * This file is part of a Proprietary System.
+ * Copyright belongs to the license holder. No license is given for its use outside
+ * the license holders systems.
+ */
+
+namespace Autumndev\Nova\MultiSelect;
 
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -42,7 +50,8 @@ class MultiSelect extends Field
     private $maxItems;
 
     /**
-     * additional attachment data
+     * additional attachment data.
+     *
      * @var mixed
      */
     private $attachmentData = null;
@@ -86,7 +95,6 @@ class MultiSelect extends Field
     /**
      * Pass additional fields to the relationship for attachement.
      *
-     * @param array $attachmentData
      * @return $this
      */
     public function attachAdditionalRelationData(array $attachmentData)
@@ -109,33 +117,33 @@ class MultiSelect extends Field
     /**
      * Hydrate the given attribute on the model based on the incoming request.
      *
-     * @param  NovaRequest  $request
-     * @param  string  $requestAttribute
-     * @param  object  $model
-     * @param  string  $attribute
+     * @param string $requestAttribute
+     * @param object $model
+     * @param string $attribute
+     *
      * @return mixed
      */
     protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
-        return function () use ($request, $requestAttribute, $model, $attribute) {
-            if ($request->exists($requestAttribute) === false) {
+        return function () use ($request, $requestAttribute, $model, $attribute): void {
+            if (false === $request->exists($requestAttribute)) {
                 return;
             }
-           
+
             $requestIds = collect();
 
             if ($request->input($requestAttribute)) {
                 $requestIds = collect(explode(',', $request->input($requestAttribute)));
             }
-           
+
             $relation = $model->{$attribute}();
-           
+
             // this could potentially be sync()?
             $currentRelationIds = $relation->get()->pluck('id');
-            
+
             // first detach ones missing from request
             $relation->detach($currentRelationIds->diff($requestIds)->all());
-            
+
             // figure out whats left, and attach them
             $toAttachArray = [];
             if (null !== $this->attachmentData) {
